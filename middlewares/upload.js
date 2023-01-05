@@ -1,17 +1,16 @@
+const { StatusCodes } = require('http-status-codes')
 const multer = require('multer')
-const path = require('path')
+const AppError = require('../utils/AppError')
 
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, '../client/public/images')
-    // cb(null, '../uploads')
-  },
+const storage = multer.diskStorage({})
 
-  filename: function (req, file, cb) {
-    cb(null, `${file.fieldname}-${Date.now()}${path.extname(file.originalname)}`)
-  },
-})
+const fileFilter = (req, file, cb) => {
+  if (!file.mimetype.startsWith('image'))
+    return cb(new AppError('Only image files are supported', StatusCodes.BAD_REQUEST), false)
 
-const upload = multer({ storage: storage })
+  cb(null, true)
+}
+
+const upload = multer({ storage, fileFilter })
 
 module.exports = upload
