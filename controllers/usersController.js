@@ -11,14 +11,14 @@ const generateOTP = require('../utils/generateOTP')
 const crypto = require('crypto')
 
 const postRegister = asyncHandler(async (req, res, next) => {
-  const { name, email, password } = req.body
+  const { name, email, password, isAdmin } = req.body
 
   if (!name || !email || !password) return next(new AppError('Missing fields', StatusCodes.BAD_REQUEST))
 
   const oldUser = await User.findOne({ email })
   if (oldUser) return next(new AppError('Email is already in use', StatusCodes.BAD_REQUEST))
 
-  const newUser = new User({ name, email, password })
+  const newUser = new User({ name, email, password, isAdmin })
   const user = await newUser.save()
 
   const otp = generateOTP()
@@ -62,7 +62,7 @@ const postLogin = asyncHandler(async (req, res, next) => {
 
   res.status(StatusCodes.OK).json({
     status: 'success',
-    user: { userId: user.user_id, name: user.name, email, token },
+    user: { userId: user.user_id, name: user.name, email, isAdmin: user.isAdmin, token },
   })
 })
 

@@ -5,6 +5,7 @@ const { StatusCodes } = require('http-status-codes')
 
 const usersRouter = require('./routes/usersRouter')
 const actorRouter = require('./routes/actorRouter')
+const movieRouter = require('./routes/movieRouter')
 const globalErrorHandler = require('./middlewares/globalErrorHandler')
 // const isAuthenticated = require('./middlewares/isAuthenticated')
 
@@ -15,6 +16,7 @@ app.use(cors())
 
 app.use('/api/v1/auth', usersRouter)
 app.use('/api/v1/actor', actorRouter)
+app.use('/api/v1/movie', movieRouter)
 
 app.use('*', (req, res, next) => {
   next(new AppError(`Can't find ${req.originalUrl} on this server!`, StatusCodes.NOT_FOUND))

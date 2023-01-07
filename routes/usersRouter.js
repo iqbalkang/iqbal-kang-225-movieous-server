@@ -9,9 +9,6 @@ const {
   verifyPasswordResetTokenResponse,
 } = require('../controllers/usersController')
 
-// const isAuthenticated = require('../middlewares/isAuthenticated')
-// const isAdmin = require('../middlewares/isAdmin')
-
 const router = express.Router()
 
 router.post('/register', postRegister)
