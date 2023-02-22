@@ -23,4 +23,5 @@ const actorSchema = new mongoose.Schema(
   { timestamps: true }
 )
 
+actorSchema.index({ name: 'text' })
 module.exports = mognoose.model('Actor', actorSchema)

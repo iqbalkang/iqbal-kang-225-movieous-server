@@ -117,4 +117,14 @@ const deleteActor = asyncHandler(async (req, res, next) => {
   })
 })
 
-module.exports = { postActor, updateActor, deleteActor, getActors, getLatestActors, getSingleActor }
+const searchActor = asyncHandler(async (req, res, next) => {
+  const { name } = req.query
+  const actors = await Actor.find({ $text: { $search: `"${name}"` } })
+
+  res.status(StatusCodes.OK).json({
+    status: 'success',
+    actors,
+  })
+})
+
+module.exports = { postActor, updateActor, deleteActor, searchActor, getActors, getLatestActors, getSingleActor }

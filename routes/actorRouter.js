@@ -6,6 +6,7 @@ const {
   getActors,
   getSingleActor,
   getLatestActors,
+  searchActor,
 } = require('../controllers/actorController')
 const { uploadImage } = require('../middlewares/upload')
 
@@ -16,6 +17,7 @@ const router = express.Router()
 
 router.get('/latest', getLatestActors)
 router.get('/', getActors)
+router.get('/search', searchActor)
 router.get('/:actorId', getSingleActor)
 router.post('/', uploadImage.single('image'), postActor)
 router.put('/:actorId', uploadImage.single('image'), updateActor)
