@@ -7,7 +7,6 @@ const cloudinary = require('cloudinary').v2
 
 const uploadTrailer = asyncHandler(async (req, res, next) => {
   const trailer = req.file
-  console.log(trailer)
   if (!trailer) return next(new AppError('Please upload a trailer', StatusCodes.BAD_REQUEST))
 
   const result = await cloudinary.uploader.upload(trailer.path, {
@@ -22,8 +21,8 @@ const uploadTrailer = asyncHandler(async (req, res, next) => {
 
 const addMovie = asyncHandler(async (req, res, next) => {
   const poster = req.file
-  const { genre, cast, tags, writers, trailer, director } = req.body
-
+  // const { genre, cast, tags, writers, trailer, director } = req.body
+  // console.log(poster)
   const movie = new Movie(req.body)
 
   if (poster) {
@@ -54,10 +53,10 @@ const addMovie = asyncHandler(async (req, res, next) => {
   // if (writers) movie.writers = writers
   // if (genre) movie.genre = genre
   // if (director) movie.director = director
-
+  // console.log(movie)
   await movie.save()
-
   res.status(StatusCodes.OK).json({
+    status: 'success',
     movie,
   })
 })

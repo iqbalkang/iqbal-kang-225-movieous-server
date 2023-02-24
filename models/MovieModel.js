@@ -38,13 +38,13 @@ const movieSchema = new mongoose.Schema(
     cast: [{ actor: { type: mongoose.Types.ObjectId, ref: 'Actor' }, roleAs: String, leadActor: Boolean }],
     writers: [{ type: mongoose.Types.ObjectId, ref: 'Actor' }],
     poster: {
-      url: { type: String, required: true },
-      public_id: { type: String, required: true },
+      url: { type: String },
+      public_id: { type: String },
       responsive: [String],
     },
     trailer: {
-      url: { type: String, required: true },
-      public_id: { type: String, required: true },
+      url: { type: String },
+      public_id: { type: String },
     },
     reviews: [{ type: mongoose.Types.ObjectId, ref: 'Review' }],
     language: {

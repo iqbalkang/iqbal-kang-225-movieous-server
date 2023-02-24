@@ -10,6 +10,6 @@ const router = express.Router()
 
 router.post('/', uploadImage.single('poster'), formDataParser, addMovie)
 router.patch('/:movieId', uploadImage.single('poster'), formDataParser, updateMovie)
-router.post('/upload-trailer', uploadVideo.single('video'), uploadTrailer)
+router.post('/upload-trailer', uploadVideo.single('trailer'), uploadTrailer)
 
 module.exports = router
