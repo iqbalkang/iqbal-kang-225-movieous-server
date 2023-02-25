@@ -113,4 +113,17 @@ const updateMovie = asyncHandler(async (req, res, next) => {
   })
 })
 
-module.exports = { addMovie, uploadTrailer, updateMovie }
+const getMovies = asyncHandler(async (req, res, next) => {
+  const { page, limit } = req.query
+
+  const movies = await Movie.find({})
+  if (!movies.length) return next(new AppError('No movies were found', StatusCodes.NOT_FOUND))
+
+  res.status(StatusCodes.OK).json({
+    len: movies.length,
+    status: 'success',
+    movies,
+  })
+})
+
+module.exports = { addMovie, uploadTrailer, updateMovie, getMovies }

@@ -12,7 +12,11 @@ const actorResponse = actor => {
 }
 
 const getActors = asyncHandler(async (req, res, next) => {
-  const actors = await Actor.find({})
+  const { page, limit } = req.query
+
+  const skip = +page * +limit
+
+  const actors = await Actor.find({}).skip(skip).limit(+limit)
   if (!actors) return next(new AppError('Could not find any actor', StatusCodes.NOT_FOUND))
 
   const formattedResponse = actors.map(actor => actorResponse(actor))
