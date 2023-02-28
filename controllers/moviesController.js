@@ -116,8 +116,10 @@ const updateMovie = asyncHandler(async (req, res, next) => {
 const getMovies = asyncHandler(async (req, res, next) => {
   const { page, limit } = req.query
 
-  const movies = await Movie.find({})
-  if (!movies.length) return next(new AppError('No movies were found', StatusCodes.NOT_FOUND))
+  const skip = +page * +limit
+
+  const movies = await Movie.find({}).skip(skip).limit(+limit)
+  if (!movies) return next(new AppError('No movies were found', StatusCodes.NOT_FOUND))
 
   res.status(StatusCodes.OK).json({
     len: movies.length,
@@ -126,4 +128,16 @@ const getMovies = asyncHandler(async (req, res, next) => {
   })
 })
 
-module.exports = { addMovie, uploadTrailer, updateMovie, getMovies }
+const getMovie = asyncHandler(async (req, res, next) => {
+  const { movieId } = req.params
+
+  const movie = await Movie.findById(movieId)
+  if (!movie) return next(new AppError('No movie was found', StatusCodes.NOT_FOUND))
+
+  res.status(StatusCodes.OK).json({
+    status: 'success',
+    movie,
+  })
+})
+
+module.exports = { addMovie, uploadTrailer, updateMovie, getMovies, getMovie }
