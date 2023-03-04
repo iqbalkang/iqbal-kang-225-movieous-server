@@ -4,12 +4,7 @@ const AppError = require('../utils/AppError')
 const Actor = require('../models/ActorModel')
 const cloudinaryUpload = require('../utils/cloudinaryUpload')
 const cloudinary = require('cloudinary').v2
-
-const actorResponse = actor => {
-  const { name, about, image, gender } = actor
-
-  return { actorId: actor._id, name, about, gender, image: image.url }
-}
+const actorResponse = require('../utils/actorResponse')
 
 const getActors = asyncHandler(async (req, res, next) => {
   const { page, limit } = req.query
@@ -125,6 +120,7 @@ const deleteActor = asyncHandler(async (req, res, next) => {
 
 const searchActor = asyncHandler(async (req, res, next) => {
   const { name } = req.query
+
   // const actors = await Actor.find({ $text: { $search: `"${name}"` } })
   const actors = await Actor.find({ name: { $regex: name, $options: 'i' } })
 

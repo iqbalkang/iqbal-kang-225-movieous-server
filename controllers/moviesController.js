@@ -4,6 +4,7 @@ const { StatusCodes } = require('http-status-codes')
 const Movie = require('../models/MovieModel')
 const AppError = require('../utils/AppError')
 const cloudinary = require('cloudinary').v2
+const actorResponse = require('../utils/actorResponse')
 
 const uploadTrailer = asyncHandler(async (req, res, next) => {
   const trailer = req.file
@@ -22,7 +23,7 @@ const uploadTrailer = asyncHandler(async (req, res, next) => {
 const addMovie = asyncHandler(async (req, res, next) => {
   const poster = req.file
   const { genre, cast, tags, writers, trailer, director } = req.body
-  console.log(req.body)
+  // console.log(req.body)
   const movie = new Movie(req.body)
 
   if (poster) {
@@ -136,12 +137,35 @@ const getMovie = asyncHandler(async (req, res, next) => {
   const { movieId } = req.params
 
   const movie = await Movie.findById(movieId).populate('director writers cast.actor')
-  console.log(movie)
   if (!movie) return next(new AppError('No movie was found', StatusCodes.NOT_FOUND))
+
+  console.log(movie)
+
+  const formattedResponse = () => {
+    return {
+      id: movie._id,
+      title: movie.title,
+      storyLine: movie.storyLine,
+      tags: movie.tags,
+      releaseDate: movie.releaseDate,
+      type: movie.type,
+      status: movie.status,
+      language: movie.language,
+      genre: movie.genre,
+      writers: movie.writers.map(writer => actorResponse(writer)),
+      director: actorResponse(movie.director),
+      poster: movie.poster,
+      cast: movie.cast.map(member => ({
+        actor: actorResponse(member.actor),
+        roleAs: member.roleAs,
+        leadActor: member.leadActor,
+      })),
+    }
+  }
 
   res.status(StatusCodes.OK).json({
     status: 'success',
-    movie,
+    movie: formattedResponse(),
   })
 })
 
