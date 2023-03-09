@@ -1,8 +1,6 @@
 const formDataParser = (req, res, next) => {
   const { genre, tags, writers, cast, trailer, director, poster } = req.body
 
-  console.log(req.body)
-
   if (genre) req.body.genre = JSON.parse(genre)
   if (tags) req.body.tags = JSON.parse(tags)
   if (writers) req.body.writers = JSON.parse(writers)

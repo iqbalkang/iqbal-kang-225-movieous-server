@@ -46,7 +46,7 @@ const movieSchema = new mongoose.Schema(
       url: { type: String },
       public_id: { type: String },
     },
-    // reviews: [{ type: mongoose.Types.ObjectId, ref: 'Review' }],
+    reviews: [{ type: mongoose.Types.ObjectId, ref: 'Review' }],
     language: {
       type: String,
       required: true,

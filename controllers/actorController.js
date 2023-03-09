@@ -71,8 +71,6 @@ const updateActor = asyncHandler(async (req, res, next) => {
   const { actorId } = req.params
   const image = req.file
 
-  console.log(image)
-
   const actor = await Actor.findById(actorId)
   const { public_id } = actor.image
 

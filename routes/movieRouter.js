@@ -6,6 +6,9 @@ const {
   getMovies,
   getMovie,
   searchMovie,
+  deleteMovie,
+  getLatestMovies,
+  getSingleMovie,
 } = require('../controllers/moviesController')
 const formDataParser = require('../middlewares/formDataParser')
 const { uploadVideo, uploadImage } = require('../middlewares/upload')
@@ -15,11 +18,16 @@ const { uploadVideo, uploadImage } = require('../middlewares/upload')
 
 const router = express.Router()
 
+router.get('/lastest-uploads', getLatestMovies)
+router.get('/single-movie/:movieId', getSingleMovie)
+
+// admin routes
 router.get('/', getMovies)
 router.get('/search', searchMovie)
 router.get('/:movieId', getMovie)
 router.post('/', uploadImage.single('poster'), formDataParser, addMovie)
 router.patch('/:movieId', uploadImage.single('poster'), formDataParser, updateMovie)
 router.post('/upload-trailer', uploadVideo.single('trailer'), uploadTrailer)
+router.delete('/:movieId', deleteMovie)
 
 module.exports = router
