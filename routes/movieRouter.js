@@ -9,6 +9,7 @@ const {
   deleteMovie,
   getLatestMovies,
   getSingleMovie,
+  getTopRatedMovies,
 } = require('../controllers/moviesController')
 const formDataParser = require('../middlewares/formDataParser')
 const { uploadVideo, uploadImage } = require('../middlewares/upload')
@@ -20,6 +21,7 @@ const router = express.Router()
 
 router.get('/lastest-uploads', getLatestMovies)
 router.get('/single-movie/:movieId', getSingleMovie)
+router.get('/top-rated', getTopRatedMovies)
 
 // admin routes
 router.get('/', getMovies)

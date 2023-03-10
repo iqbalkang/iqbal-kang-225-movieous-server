@@ -6,7 +6,7 @@ const AppError = require('../utils/AppError')
 const cloudinary = require('cloudinary').v2
 const actorResponse = require('../utils/actorResponse')
 const Review = require('../models/ReviewModel')
-const { averageRatingPipeline } = require('../utils/aggregations')
+const { averageRatingPipeline, topRatedMoviesPipeline, getAverageRatings } = require('../utils/aggregations')
 
 const uploadTrailer = asyncHandler(async (req, res, next) => {
   const trailer = req.file
