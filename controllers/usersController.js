@@ -62,7 +62,7 @@ const postLogin = asyncHandler(async (req, res, next) => {
 
   res.status(StatusCodes.OK).json({
     status: 'success',
-    user: { userId: user.user_id, name: user.name, email, isAdmin: user.isAdmin, token },
+    user: { userId: user._id, name: user.name, email, isAdmin: user.isAdmin, token },
   })
 })
 

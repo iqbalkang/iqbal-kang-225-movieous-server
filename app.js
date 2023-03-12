@@ -7,6 +7,7 @@ const usersRouter = require('./routes/usersRouter')
 const actorRouter = require('./routes/actorRouter')
 const movieRouter = require('./routes/movieRouter')
 const reviewRouter = require('./routes/reviewRouter')
+const adminRouter = require('./routes/adminRouter')
 const globalErrorHandler = require('./middlewares/globalErrorHandler')
 // const isAuthenticated = require('./middlewares/isAuthenticated')
 
@@ -19,6 +20,7 @@ app.use('/api/v1/auth', usersRouter)
 app.use('/api/v1/actor', actorRouter)
 app.use('/api/v1/movie', movieRouter)
 app.use('/api/v1/review', reviewRouter)
+app.use('/api/v1/admin', adminRouter)
 
 app.use('*', (req, res, next) => {
   next(new AppError(`Can't find ${req.originalUrl} on this server!`, StatusCodes.NOT_FOUND))

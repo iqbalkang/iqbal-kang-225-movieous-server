@@ -1,7 +1,6 @@
 const Review = require('../models/ReviewModel')
 
 exports.averageRatingPipeline = movieId => {
-  console.log(movieId)
   return [
     {
       $lookup: {

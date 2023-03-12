@@ -6,7 +6,12 @@ const AppError = require('../utils/AppError')
 const cloudinary = require('cloudinary').v2
 const actorResponse = require('../utils/actorResponse')
 const Review = require('../models/ReviewModel')
-const { averageRatingPipeline, topRatedMoviesPipeline, getAverageRatings } = require('../utils/aggregations')
+const {
+  averageRatingPipeline,
+  topRatedMoviesPipeline,
+  getAverageRatings,
+  relatedMovieAggregation,
+} = require('../utils/aggregations')
 
 const uploadTrailer = asyncHandler(async (req, res, next) => {
   const trailer = req.file
@@ -225,6 +230,7 @@ const getLatestMovies = asyncHandler(async (req, res, next) => {
         movieId: _id,
         trailer: trailer?.url,
         poster: poster?.url,
+        responsivePosters: poster.responsive,
         title,
         storyLine,
       }
@@ -256,7 +262,6 @@ const getTopRatedMovies = async (req, res) => {
 
 const getRelatedMovies = async (req, res) => {
   const { movieId } = req.params
-  if (!isValidObjectId(movieId)) return sendError(res, 'Invalid movie id!')
 
   const movie = await Movie.findById(movieId)
 
@@ -269,6 +274,7 @@ const getRelatedMovies = async (req, res) => {
       id: m._id,
       title: m.title,
       poster: m.poster,
+      responsivePosters: m.responsivePosters,
       reviews: { ...reviews },
     }
   }
@@ -279,11 +285,9 @@ const getRelatedMovies = async (req, res) => {
 
 const getSingleMovie = async (req, res) => {
   const { movieId } = req.params
-
   const movie = await Movie.findById(movieId).populate('director writers cast.actor')
 
   const [aggregatedResponse] = await Review.aggregate(averageRatingPipeline(movie._id))
-  console.log(aggregatedResponse)
 
   const reviews = {}
 
@@ -300,8 +304,8 @@ const getSingleMovie = async (req, res) => {
     cast,
     writers,
     director,
-    releseDate,
-    genres,
+    releaseDate,
+    genre,
     tags,
     language,
     poster,
@@ -314,8 +318,8 @@ const getSingleMovie = async (req, res) => {
       id,
       title,
       storyLine,
-      releseDate,
-      genres,
+      releaseDate,
+      genre,
       tags,
       language,
       type,
@@ -326,7 +330,7 @@ const getSingleMovie = async (req, res) => {
         profile: {
           id: c.actor._id,
           name: c.actor.name,
-          avatar: c.actor?.avatar?.url,
+          image: c.actor?.image?.url,
         },
         leadActor: c.leadActor,
         roleAs: c.roleAs,

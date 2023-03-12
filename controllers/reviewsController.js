@@ -5,6 +5,8 @@ const Actor = require('../models/ActorModel')
 const Movie = require('../models/MovieModel')
 const User = require('../models/UserModel')
 const Review = require('../models/ReviewModel')
+const { getAverageRatings } = require('../utils/aggregations')
+const { ObjectId } = require('mongodb')
 
 const postReview = asyncHandler(async (req, res, next) => {
   const { movieId } = req.params
@@ -23,9 +25,12 @@ const postReview = asyncHandler(async (req, res, next) => {
   movie.reviews.push(review._id)
   await movie.save()
 
+  const reviews = await getAverageRatings(movie._id)
+
   res.status(StatusCodes.OK).json({
     status: 'success',
     message: 'review was added successfully',
+    reviews,
   })
 })
 
@@ -41,9 +46,14 @@ const updateReview = asyncHandler(async (req, res, next) => {
   review.comment = comment
   await review.save()
 
+  const movie = await Movie.findById(review.movieId)
+  const reviews = await getAverageRatings(movie._id)
+
   res.status(StatusCodes.OK).json({
     status: 'success',
     message: 'review was updated successfully',
+    reviews,
+    review,
   })
 })
 
@@ -56,8 +66,6 @@ const deleteReview = asyncHandler(async (req, res, next) => {
 
   const movie = await Movie.findOne({ _id: review.movieId })
   if (!movie) return next(new AppError('no movie was found', StatusCodes.NOT_FOUND))
-
-  console.log(movie.reviews)
 
   movie.reviews = movie.reviews.filter(revId => revId.toString() !== reviewId)
   await movie.save()
@@ -104,4 +112,19 @@ const getMovieReviews = asyncHandler(async (req, res, next) => {
   })
 })
 
-module.exports = { postReview, updateReview, deleteReview, getMovieReviews }
+const getOwnerReview = asyncHandler(async (req, res, next) => {
+  const { _id: userId } = req.user
+  const { movieId } = req.params
+
+  const review = await Review.findOne({ movieId, userId })
+  if (!review) return next(new AppError('no review was found', StatusCodes.NOT_FOUND))
+
+  const formattedResponse = { ...review.toObject(), reviewId: review._id }
+
+  res.status(StatusCodes.OK).json({
+    status: 'success',
+    review: formattedResponse,
+  })
+})
+
+module.exports = { postReview, updateReview, deleteReview, getMovieReviews, getOwnerReview }
