@@ -1,6 +1,6 @@
 const { StatusCodes } = require('http-status-codes')
 const User = require('../models/UserModel')
-const AppError = require('../utils/appError')
+const AppError = require('../utils/AppError')
 
 const isAdmin = async (req, res, next) => {
   const { isAdmin } = req.user
