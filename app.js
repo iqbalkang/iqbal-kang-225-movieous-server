@@ -10,11 +10,15 @@ const reviewRouter = require('./routes/reviewRouter')
 const adminRouter = require('./routes/adminRouter')
 const globalErrorHandler = require('./middlewares/globalErrorHandler')
 // const isAuthenticated = require('./middlewares/isAuthenticated')
+const path = require('path')
 
 const app = express()
 
 app.use(express.json())
 app.use(cors())
+
+// Production
+app.use(express.static(path.join(__dirname, '../client/build')))
 
 app.use('/api/v1/auth', usersRouter)
 app.use('/api/v1/actor', actorRouter)
