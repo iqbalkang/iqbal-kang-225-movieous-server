@@ -74,11 +74,7 @@ exports.topRatedMoviesPipeline = type => {
       },
     },
     {
-      $match: {
-        reviews: { $exists: true },
-        status: { $eq: 'public' },
-        type: { $eq: type },
-      },
+      $match: matchOptions,
     },
     {
       $project: {
@@ -91,6 +87,7 @@ exports.topRatedMoviesPipeline = type => {
     {
       $sort: {
         reviewCount: -1,
+        // ratingAvg: 1,
       },
     },
     {

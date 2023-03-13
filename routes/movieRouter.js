@@ -11,6 +11,8 @@ const {
   getSingleMovie,
   getTopRatedMovies,
   getRelatedMovies,
+  searchMovieUser,
+  getAllMovies,
 } = require('../controllers/moviesController')
 const formDataParser = require('../middlewares/formDataParser')
 const { uploadVideo, uploadImage } = require('../middlewares/upload')
@@ -24,6 +26,8 @@ router.get('/lastest-uploads', getLatestMovies)
 router.get('/single-movie/:movieId', getSingleMovie)
 router.get('/top-rated', getTopRatedMovies)
 router.get('/related-movies/:movieId', getRelatedMovies)
+router.get('/movie-search', searchMovieUser)
+router.get('/all-movies', getAllMovies)
 
 // admin routes
 router.get('/', getMovies)
