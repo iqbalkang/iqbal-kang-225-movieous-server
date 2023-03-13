@@ -1,5 +1,5 @@
 const { StatusCodes } = require('http-status-codes')
-const AppError = require('../utils/appError')
+// const AppError = require('../utils/appError')
 const jwt = require('jsonwebtoken')
 const asyncHandler = require('express-async-handler')
 const User = require('../models/UserModel')
