@@ -1,3 +1,5 @@
+const { json } = require('express')
+
 const formDataParser = (req, res, next) => {
   const { genre, tags, writers, cast, trailer, director, poster } = req.body
 
