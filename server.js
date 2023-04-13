@@ -4,7 +4,7 @@ const connectDB = require('./utils/connectDB')
 
 dotEnv.config()
 
-const PORT = process.env.PORT || 8080
+const PORT = process.env.PORT || 8000
 const MONGO_URI = process.env.MONGO_URI
 
 const startServer = async () => {
