@@ -18,7 +18,7 @@ app.use(express.json())
 app.use(cors())
 
 // Production
-app.use(express.static(path.join(__dirname, '../client/build')))
+app.use('/', express.static(path.join(__dirname, '../client/build')))
 
 app.use('/api/v1/auth', usersRouter)
 app.use('/api/v1/actor', actorRouter)
