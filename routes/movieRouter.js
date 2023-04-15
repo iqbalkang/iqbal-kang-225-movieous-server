@@ -17,9 +17,6 @@ const {
 const formDataParser = require('../middlewares/formDataParser')
 const { uploadVideo, uploadImage } = require('../middlewares/upload')
 
-// const isAuthenticated = require('../middlewares/isAuthenticated')
-// const isAdmin = require('../middlewares/isAdmin')
-
 const router = express.Router()
 
 router.get('/lastest-uploads', getLatestMovies)

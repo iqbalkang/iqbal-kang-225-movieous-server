@@ -9,7 +9,6 @@ const movieRouter = require('./routes/movieRouter')
 const reviewRouter = require('./routes/reviewRouter')
 const adminRouter = require('./routes/adminRouter')
 const globalErrorHandler = require('./middlewares/globalErrorHandler')
-// const isAuthenticated = require('./middlewares/isAuthenticated')
 const path = require('path')
 
 const app = express()

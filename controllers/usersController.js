@@ -9,6 +9,7 @@ const { isValidObjectId } = require('mongoose')
 const sendMail = require('../utils/sendMail')
 const generateOTP = require('../utils/generateOTP')
 const crypto = require('crypto')
+const OTPModel = require('../models/OTPModel')
 
 const postRegister = asyncHandler(async (req, res, next) => {
   const { name, email, password, isAdmin } = req.body
@@ -23,10 +24,10 @@ const postRegister = asyncHandler(async (req, res, next) => {
 
   const otp = generateOTP()
   const newOTP = new OTP({ otp, belongsTo: user._id })
-  await newOTP.save()
+  const ot = await newOTP.save()
 
   const transport = sendMail()
-  transport.sendMail({
+  await transport.sendMail({
     from: 'verification@movieous.com',
     to: user.email,
     subject: 'Email Verification',
@@ -39,11 +40,8 @@ const postRegister = asyncHandler(async (req, res, next) => {
 
   res.status(StatusCodes.OK).json({
     status: 'success',
-    user: {
-      userId: user._id,
-      token,
-    },
     message: 'Please verify your email. OTP has been sent to your account.',
+    user: { userId: user._id, name: user.name, email, isAdmin: user.isAdmin, token, isVerified: user.isVerified },
   })
 })
 
@@ -62,7 +60,7 @@ const postLogin = asyncHandler(async (req, res, next) => {
 
   res.status(StatusCodes.OK).json({
     status: 'success',
-    user: { userId: user._id, name: user.name, email, isAdmin: user.isAdmin, token },
+    user: { userId: user._id, name: user.name, email, isAdmin: user.isAdmin, token, isVerified: user.isVerified },
   })
 })
 
@@ -82,6 +80,7 @@ const verifyUser = asyncHandler(async (req, res, next) => {
   if (!otpDB) return next(new AppError('Bad request', StatusCodes.BAD_REQUEST))
 
   const areEqual = await otpDB.compareOTP(otp)
+  console.log(areEqual)
   if (!areEqual) return next(new AppError('Invalid otp', StatusCodes.BAD_REQUEST))
 
   user.isVerified = true
@@ -89,12 +88,17 @@ const verifyUser = asyncHandler(async (req, res, next) => {
 
   await OTP.findByIdAndDelete(otpDB._id)
 
+  const token = user.createJWT(user._id)
+
   res.status(StatusCodes.OK).json({
     status: 'success',
     user: {
       userId: user._id,
       name: user.name,
       email: user.email,
+      token,
+      isVerified: user.isVerified,
+      isAdmin: user.isAdmin,
     },
     message: 'email has been verified.',
   })
@@ -160,8 +164,6 @@ const verifyPasswordResetTokenResponse = (req, res) => {
 
 const resetPassword = asyncHandler(async (req, res, next) => {
   const { newPassword, confirmPassword, userId } = req.body
-  console.log(req.token)
-  console.log(req.token._id)
 
   if (!newPassword || !confirmPassword) return next(new AppError('Please enter the passwords', StatusCodes.BAD_REQUEST))
   if (newPassword !== confirmPassword) return next(new AppError('Passwords do not match', StatusCodes.BAD_REQUEST))
@@ -181,6 +183,43 @@ const resetPassword = asyncHandler(async (req, res, next) => {
   })
 })
 
+const resendEmailVerificationToken = async (req, res, next) => {
+  const { userId } = req.body
+
+  const user = await User.findById(userId)
+  if (!user) return res.json({ error: 'user not found!' })
+
+  if (user.isVerified) return next(new AppError('User is already verified', StatusCodes.BAD_REQUEST))
+
+  const alreadyHasToken = await OTPModel.findOne({
+    belongsTo: userId,
+  })
+
+  if (alreadyHasToken)
+    return next(new AppError('Only after one hour you can request for another token!', StatusCodes.BAD_REQUEST))
+
+  const otp = generateOTP()
+
+  const newEmailVerificationToken = new OTPModel({ belongsTo: user._id, otp })
+  await newEmailVerificationToken.save()
+
+  const transport = sendMail()
+
+  transport.sendMail({
+    from: 'verification@movieous.com',
+    to: user.email,
+    subject: 'Email Verification',
+    html: `
+      <p>You verification OTP</p>
+      <h1>${otp}</h1>
+    `,
+  })
+
+  res.json({
+    message: 'New OTP has been sent to your registered email account.',
+  })
+}
+
 module.exports = {
   postRegister,
   postLogin,
@@ -189,4 +228,5 @@ module.exports = {
   verifyPasswordResetToken,
   resetPassword,
   verifyPasswordResetTokenResponse,
+  resendEmailVerificationToken,
 }

@@ -13,6 +13,8 @@ const postReview = asyncHandler(async (req, res, next) => {
   const { _id: userId } = req.user
   const { rating, comment } = req.body
 
+  if (!req.user.isVerified) return next(new AppError('Account is not verified', StatusCodes.NOT_FOUND))
+
   const movie = await Movie.findOne({ _id: movieId })
   if (!movie) return next(new AppError('no movie was found', StatusCodes.NOT_FOUND))
 
@@ -83,6 +85,7 @@ const getMovieReviews = asyncHandler(async (req, res, next) => {
   // const { _id: userId } = req.user
 
   const { movieId } = req.params
+
   const movie = await Movie.findById(movieId)
     .populate({
       path: 'reviews',
