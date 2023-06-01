@@ -12,7 +12,6 @@ const passResetSchema = new mongoose.Schema({
   },
   createdAt: {
     type: Date,
-    expireAfterSeconds: 3600,
     default: Date.now(),
   },
 })

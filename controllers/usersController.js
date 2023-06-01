@@ -80,7 +80,6 @@ const verifyUser = asyncHandler(async (req, res, next) => {
   if (!otpDB) return next(new AppError('Bad request', StatusCodes.BAD_REQUEST))
 
   const areEqual = await otpDB.compareOTP(otp)
-  console.log(areEqual)
   if (!areEqual) return next(new AppError('Invalid otp', StatusCodes.BAD_REQUEST))
 
   user.isVerified = true

@@ -9,7 +9,7 @@ const MONGO_URI = process.env.MONGO_URI
 
 const startServer = async () => {
   await connectDB(MONGO_URI)
-  app.listen(PORT, () => console.log(`Listening on ${PORT}...!!!`))
+  app.listen(PORT, () => `Listening on ${PORT}...!!!`)
 }
 
 startServer()

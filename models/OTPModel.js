@@ -13,8 +13,6 @@ const otpSchema = new mongoose.Schema({
   },
   createdAt: {
     type: Date,
-    // expireAfterSeconds: 3600,
-    // expires: 3600,
     default: Date.now(),
   },
 })
@@ -24,7 +22,7 @@ otpSchema.pre('save', async function () {
 })
 
 otpSchema.methods.compareOTP = async function (enteredOTP) {
-  console.log(enteredOTP)
+  enteredOTP
   return await bcrypt.compare(enteredOTP, this.otp)
 }
 

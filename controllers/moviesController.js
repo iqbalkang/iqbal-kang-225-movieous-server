@@ -29,8 +29,7 @@ const uploadTrailer = asyncHandler(async (req, res, next) => {
 
 const addMovie = asyncHandler(async (req, res, next) => {
   const poster = req.file
-  const { genre, cast, tags, writers, trailer, director } = req.body
-  console.log(req.body)
+  const { genre, cast, tags, writers, trailer, director } = req.body(req.body)
   const movie = new Movie(req.body)
 
   if (poster) {
@@ -61,7 +60,7 @@ const addMovie = asyncHandler(async (req, res, next) => {
   // if (writers) movie.writers = writers
   // if (genre) movie.genre = genre
   // if (director) movie.director = director
-  // console.log(movie)
+  // (movie)
   await movie.save()
   res.status(StatusCodes.OK).json({
     status: 'success',
@@ -74,18 +73,18 @@ const updateMovie = asyncHandler(async (req, res, next) => {
   const { movieId } = req.params
   const { genre, cast, tags, writers, trailer, director } = req.body
 
-  // console.log(trailer)
+  // (trailer)
 
   // const movie = await Movie.findById(movieId)
   // if (!movie) return next(new AppError('No movie was found', StatusCodes.BAD_REQUEST))
-  // console.log(movie)
+  // (movie)
 
   // const movie = await Movie.findById
 
   const movie = await Movie.findByIdAndUpdate(movieId, req.body, { new: true, runValidators: true })
   if (!movie) return next(new AppError('No movie was found to update', StatusCodes.BAD_REQUEST))
 
-  // console.log(poster)
+  // (poster)
 
   if (poster) {
     const { public_id: poster_id } = movie.poster
@@ -197,14 +196,16 @@ const deleteMovie = asyncHandler(async (req, res, next) => {
   const { public_id: poster_id } = movie.poster
   if (poster_id) {
     console.log(poster_id)
+    // const { result } = await cloudinary.uploader.destroy(poster_id)(result)
     const { result } = await cloudinary.uploader.destroy(poster_id)
     console.log(result)
-    if (result !== 'ok') return next(new AppError('Could not delete the poster from cloud'))
+    if (result !== 'ok') next(new AppError('Could not delete the poster from cloud'))
   }
 
   const { public_id } = movie.trailer
   if (public_id) {
     const { result } = await cloudinary.uploader.destroy(public_id, { resource_type: 'video' })
+    console.log(result)
     if (result !== 'ok') return next(new AppError('Could not delete the trailer from cloud'))
   }
 
@@ -349,8 +350,7 @@ const getSingleMovie = async (req, res) => {
 }
 
 const searchMovieUser = asyncHandler(async (req, res, next) => {
-  const { title } = req.query
-  console.log(title)
+  const { title } = req.query(title)
   if (!title.trim()) return sendError(res, 'Invalid request!')
 
   const movies = await Movie.find({
@@ -378,9 +378,7 @@ const searchMovieUser = asyncHandler(async (req, res, next) => {
 })
 
 const getAllMovies = asyncHandler(async (req, res, next) => {
-  const { page, limit } = req.query
-
-  console.log(page, limit)
+  const { page, limit } = req.query(page, limit)
 
   const skip = +page * +limit
 
