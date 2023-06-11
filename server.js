@@ -1,15 +1,15 @@
-const app = require('./app')
-const dotEnv = require('dotenv')
-const connectDB = require('./utils/connectDB')
+const app = require('./app');
+const dotEnv = require('dotenv');
+const connectDB = require('./utils/connectDB');
 
-dotEnv.config()
+dotEnv.config();
 
-const PORT = process.env.PORT || 8000
-const MONGO_URI = process.env.MONGO_URI
+const PORT = process.env.PORT || 8000;
+const MONGO_URI = process.env.MONGO_URI;
 
 const startServer = async () => {
-  await connectDB(MONGO_URI)
-  app.listen(PORT, () => `Listening on ${PORT}...!!!`)
-}
+  await connectDB(MONGO_URI);
+  app.listen(PORT, () => console.log(`Listening on ${PORT}...!!!`));
+};
 
-startServer()
+startServer();
