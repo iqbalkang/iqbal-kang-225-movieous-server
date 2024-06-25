@@ -14,7 +14,7 @@ This is a full-stack application designed to provide a practical learning experi
 
 <h2>🚀 Hosted At</h2>
 
-[http://movieous.wiki/](http://movieous.wiki/)
+[http://movieous.xyz/](http://movieous.xyz/)
 
 <h2>💻 Built with</h2>
 
